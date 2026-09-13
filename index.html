@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liham Countdown</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+  background-image: url("poster.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: -1;
+}
+
+.card {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  padding: 25px;
+  border-radius: 20px;
+  text-align: center;
+  width: 90%;
+  max-width: 420px;
+  opacity: 0;
+  animation: slideUp 1s ease forwards;
+}
+
+.timer {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.box {
+  background: #f3f3f3;
+  padding: 12px;
+  border-radius: 12px;
+  width: 22%;
+  transform: scale(0.8);
+  opacity: 0;
+  animation: popIn 0.6s ease forwards;
+}
+
+.box:nth-child(1){animation-delay:.4s;}
+.box:nth-child(2){animation-delay:.6s;}
+.box:nth-child(3){animation-delay:.8s;}
+.box:nth-child(4){animation-delay:1s;}
+
+.btn {
+  display: block;
+  background: black;
+  color: white;
+  padding: 14px;
+  border-radius: 12px;
+  text-decoration: none;
+  margin-top: 10px;
+  transition: .3s;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+.live::before {
+  content: "●";
+  color: red;
+  margin-right: 6px;
+  animation: blink 1s infinite;
+}
+
+@keyframes slideUp {
+  to { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+
+@keyframes popIn {
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes blink {
+  50% { opacity: 0.3; }
+}
+</style>
+</head>
+
+<body>
+
+<audio loop id="bgAudio">
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<div class="overlay"></div>
+
+<div class="card">
+  <h2>Liham: Will Ashley's Album Launch</h2>
+  <div>SM North EDSA Skydome • Sep 20, 2026, 7:00 PM</div>
+
+  <div class="timer">
+    <div class="box"><h1 id="days">0</h1><small>days</small></div>
+    <div class="box"><h1 id="hours">0</h1><small>hrs</small></div>
+    <div class="box"><h1 id="minutes">0</h1><small>min</small></div>
+    <div class="box"><h1 id="seconds">0</h1><small>sec</small></div>
+  </div>
+
+  <a href="https://smtickets.com/events/view/18241" target="_blank" class="btn">
+    🎟 Get tickets on SM Tickets →
+  </a>
+
+  <div class="live">Countdown is live</div>
+</div>
+
+<script>
+const targetDate = new Date("Sep 20, 2026 19:00:00").getTime();
+const audio = document.getElementById("bgAudio");
+
+document.body.addEventListener("click", () => {
+  audio.volume = 0.7;
+  audio.play();
+}, { once: true });
+
+setInterval(() => {
+  const now = new Date().getTime();
+  const gap = targetDate - now;
+
+  const days = Math.floor(gap / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((gap / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((gap / (1000 * 60)) % 60);
+  const seconds = Math.floor((gap / 1000) % 60);
+
+  document.getElementById("days").innerText = days;
+  document.getElementById("hours").innerText = hours;
+  document.getElementById("minutes").innerText = minutes;
+  document.getElementById("seconds").innerText = seconds;
+
+  if (days===0 && hours===0 && minutes===0 && seconds<=10) {
+    document.body.style.backgroundColor = seconds % 2 ? "#200" : "#000";
+  }
+
+  if (gap < 0) {
+    document.querySelector(".timer").innerHTML = "🎉 EVENT STARTED!";
+  }
+
+}, 1000);
+</script>
+
+</body>
+</html>
